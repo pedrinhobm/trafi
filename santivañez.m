@@ -34,21 +34,21 @@ empirical_W_md1 = (1 ./ (2 * (1 - rho) * transmission_rate)) + variabilidad * ra
 empirical_W_mm1 = (rho ./ (transmission_rate * (1 - rho))) + variabilidad * randn(size(rho));
 
 % Puntos específicos que deseas marcar en la gráfica
-specific_points = [0.7, 0.8, 0.9, 0.95, 0.99, 0.995]; % distribuire los puntos obtuvimos de la 1.1 de mi arreglo
-
+points_array = [0.7, 0.8, 0.9, 0.95, 0.97 0.99, 0.995]; % distribuire los puntos obtuvimos de la 1.1 de mi arreglo
+% puede agregarle mas valores 
 % Gráfica de los resultados
 figure;
 hold on;
 
 % Gráfica de las curvas teóricas
 plot(rho, theoretical_W_md1, 'g', 'DisplayName', 'Theoretical M/D/1');
-plot(rho, theoretical_W_mm1, 'y', 'DisplayName', 'Theoretical M/M/1');
+plot(rho, theoretical_W_mm1, 'r', 'DisplayName', 'Theoretical M/M/1');
 
 % Puntos empíricos cercanos a las curvas teóricas
-for point = specific_points
+for point = points_array
     [~, idx] = min(abs(rho - point));
-    plot(rho(idx), empirical_W_md1(idx), 'r+', 'MarkerSize', 8);
-    plot(rho(idx), empirical_W_mm1(idx), 'b+', 'MarkerSize', 8);
+    plot(rho(idx), empirical_W_md1(idx), 'b+', 'MarkerSize', 8);
+    plot(rho(idx), empirical_W_mm1(idx), 'k+', 'MarkerSize', 8);
 end
 
 title('Average Queue Time (W) vs Traffic Intensity (ρ)');
