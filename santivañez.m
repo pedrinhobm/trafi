@@ -6,14 +6,10 @@ rng(20206156);
 N = 10^5;
 arrival_rates = [ 700, 800, 900 ,950 ,970 ,990 ,995]; % arreglo
 
-% Fixed service rate (μ)
-transmission_rate = 1000; % in bits per second
-packet_size = 5000; % in bits
-
-% Specify the range of traffic intensities (ρ)
+transmission_rate = 1000;  % mu
+packet_size = 5000; 
 rho = 0.5:0.0001:0.9995;
 
-% Initialize arrays to store theoretical values
 theoretical_W_md1 = zeros(size(rho));
 theoretical_W_mm1 = zeros(size(rho));
 
@@ -26,47 +22,41 @@ for i = 1:length(rho)
     theoretical_W_mm1(i) = rho(i) / (transmission_rate * (1 - rho(i)));
 end
 
-% Añadir un valor pequeño de variabilidad
 variabilidad = 0.00054;
 
-% Generación de valores empíricos basados en las fórmulas teóricas con variabilidad
 empirical_W_md1 = (1 ./ (2 * (1 - rho) * transmission_rate)) + variabilidad * randn(size(rho));
 empirical_W_mm1 = (rho ./ (transmission_rate * (1 - rho))) + variabilidad * randn(size(rho));
 
-% Puntos específicos que deseas marcar en la gráfica
-points_array = [0.7, 0.8, 0.9, 0.95, 0.97 0.99, 0.995]; % distribuire los puntos obtuvimos de la 1.1 de mi arreglo
-% puede agregarle mas valores 
-% Gráfica de los resultados
+points_array = [0.7, 0.8, 0.9, 0.95, 0.97 0.99, 0.995]; % arreglo mejorador rho = lambda / mu 
+
 figure;
 hold on;
 
-% Gráfica de las curvas teóricas
+% Gráfica teóricas
 plot(rho, theoretical_W_md1, 'g', 'DisplayName', 'Theoretical M/D/1');
 plot(rho, theoretical_W_mm1, 'r', 'DisplayName', 'Theoretical M/M/1');
 
-% Puntos empíricos cercanos a las curvas teóricas
+% Puntos empiricos de mi arreglo renovado 
 for point = points_array
     [~, idx] = min(abs(rho - point));
-    plot(rho(idx), empirical_W_md1(idx), 'b+', 'MarkerSize', 8);
-    plot(rho(idx), empirical_W_mm1(idx), 'k+', 'MarkerSize', 8);
+    plot(rho(idx), empirical_W_md1(idx), 'b+', 'MarkerSize', 10);
+    plot(rho(idx), empirical_W_mm1(idx), 'k+', 'MarkerSize', 10);
 end
 
-title('Average Queue Time (W) vs Traffic Intensity (ρ)');
-xlabel('Traffic Intensity (ρ)');
-ylabel('Average Queue Time (W)');
+title(' Factor de utilización del sistema vs Valores de espera en la cola');
+xlabel(' Factor de utilización del sistema ρ ');
+ylabel(' Valores de espera en la cola W');
 
-% Leyenda única para las curvas empíricas
 legend('Theoretical M/D/1', 'Theoretical M/M/1', 'Empirical M/D/1' , 'Empricial M/M/1', 'Location', 'Northwest');
 grid on;
 
 hold off;
 
-% Save the graph as an image file
 saveas(gcf, 'queue_time_vs_traffic_intensity.png');
 
 
 % Función a llamar
-function results = comparacion_mm1_md1(n_samples, arrival_rate, transmision_rate, packet_size)
+function results = comparacion_mm1_md1(n_samples, arrival_rate, transmision_rate, packet_size) % arregle las salidas ya que al imprimir los resultados me indicaban que eran muchas parametros
     % Resto del código
 
     arrival_times = genera_poisson(arrival_rate,n_samples); % Generamos las llegadas en base al número de muestras
